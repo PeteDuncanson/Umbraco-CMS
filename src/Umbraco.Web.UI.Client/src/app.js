@@ -1,18 +1,18 @@
-var app = angular.module('umbraco', [
-	'umbraco.filters',
-	'umbraco.directives',
-	'umbraco.resources',
-	'umbraco.services',
-	'umbraco.packages',
-	'umbraco.views',
+var app = angular.module("umbraco", [
+    "umbraco.filters",
+    "umbraco.directives",
+    "umbraco.resources",
+    "umbraco.services",
+    "umbraco.packages",
+    "umbraco.views",
 
-    'ngCookies',
-    'ngSanitize',
-    'ngMobile',
-    'ngRoute',
-    'tmh.dynamicLocale',
-    'ngFileUpload',
-    'LocalStorageModule'
+    "ngCookies",
+    "ngSanitize",
+    "ngTouch",
+    "ngRoute",
+    "tmh.dynamicLocale",
+    "ngFileUpload",
+    "LocalStorageModule"
 ]);
 
 var packages = angular.module("umbraco.packages", []);
@@ -22,38 +22,52 @@ var packages = angular.module("umbraco.packages", []);
 //order, clearing will always happen before umbraco.views and umbraco
 //module is initilized.
 angular.module("umbraco.views", ["umbraco.viewcache"]);
-angular.module("umbraco.viewcache", [])
-    .run(function ($rootScope, $templateCache, localStorageService) {
+angular
+    .module("umbraco.viewcache", [])
+    .run(function($rootScope, $templateCache, localStorageService) {
         /** For debug mode, always clear template cache to cut down on
-            dev frustration and chrome cache on templates */
+         dev frustration and chrome cache on templates */
         if (Umbraco.Sys.ServerVariables.isDebuggingEnabled) {
             $templateCache.removeAll();
-        }
-        else {
+        } else {
             var storedVersion = localStorageService.get("umbVersion");
-            if (!storedVersion || storedVersion !== Umbraco.Sys.ServerVariables.application.cacheBuster) {
+            if (
+                !storedVersion ||
+                storedVersion !==
+                    Umbraco.Sys.ServerVariables.application.cacheBuster
+            ) {
                 //if the stored version doesn't match our cache bust version, clear the template cache
                 $templateCache.removeAll();
                 //store the current version
-                localStorageService.set("umbVersion", Umbraco.Sys.ServerVariables.application.cacheBuster);
+                localStorageService.set(
+                    "umbVersion",
+                    Umbraco.Sys.ServerVariables.application.cacheBuster
+                );
             }
         }
     })
     .config([
         //This ensures that all of our angular views are cache busted, if the path starts with views/ and ends with .html, then
         // we will append the cache busting value to it. This way all upgraded sites will not have to worry about browser cache.
-        "$provide", function($provide) {
+        "$provide",
+        function($provide) {
             return $provide.decorator("$http", [
-                "$delegate", function($delegate) {
+                "$delegate",
+                function($delegate) {
                     var get = $delegate.get;
-                    $delegate.get = function (url, config) {
-
-                        if (Umbraco.Sys.ServerVariables.application && url.startsWith("views/") && url.endsWith(".html")) {
-                            var rnd = Umbraco.Sys.ServerVariables.application.cacheBuster;
-                            var _op = (url.indexOf("?") > 0) ? "&" : "?";
+                    $delegate.get = function(url, config) {
+                        if (
+                            Umbraco.Sys.ServerVariables.application &&
+                            url.startsWith("views/") &&
+                            url.endsWith(".html")
+                        ) {
+                            var rnd =
+                                Umbraco.Sys.ServerVariables.application
+                                    .cacheBuster;
+                            var _op = url.indexOf("?") > 0 ? "&" : "?";
                             url += _op + "umb__rnd=" + rnd;
                         }
-                        
+
                         return get(url, config);
                     };
                     return $delegate;

@@ -5,7 +5,7 @@ var app = angular.module('umbraco', [
 	'umbraco.services',
 	'umbraco.httpbackend',
     'ngCookies',
-    'ngMobile',
+    'ngTouch',
     'ngSanitize',
     'tmh.dynamicLocale'
 ]);

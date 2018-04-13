@@ -1,7 +1,7 @@
-var app = angular.module('umbraco', [    
-    'umbraco.directives',
-    'umbraco.install',
-    'ngCookies',
-    'ngMobile',
-    'ngSanitize'
+var app = angular.module("umbraco", [
+    "umbraco.directives",
+    "umbraco.install",
+    "ngCookies",
+    "ngTouch",
+    "ngSanitize"
 ]);

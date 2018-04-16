@@ -1,19 +1,31 @@
-var app = angular.module("umbraco", [
-    "umbraco.filters",
-    "umbraco.directives",
-    "umbraco.resources",
-    "umbraco.services",
-    "umbraco.packages",
-    "umbraco.views",
+var app = angular
+    .module("umbraco", [
+        "umbraco.filters",
+        "umbraco.directives",
+        "umbraco.resources",
+        "umbraco.services",
+        "umbraco.packages",
+        "umbraco.views",
 
-    "ngCookies",
-    "ngSanitize",
-    "ngTouch",
-    "ngRoute",
-    "tmh.dynamicLocale",
-    "ngFileUpload",
-    "LocalStorageModule"
-]);
+        "ngCookies",
+        "ngSanitize",
+        "ngTouch",
+        "ngRoute",
+        "tmh.dynamicLocale",
+        "ngFileUpload",
+        "LocalStorageModule"
+    ])
+    .config([
+        "$controllerProvider",
+        function($controllerProvider) {
+            // We need to do this to allow JS in packages to continue working
+            // See: https://code.angularjs.org/1.3.20/docs/guide/migration#controllers
+            // TODO: I assume we "could" have this as a config setting so you could set
+            // it to "strict" mode which wouldn't allow global controllers
+            $controllerProvider.allowGlobals();
+        }
+    ]);
+console.warn("Running AngularJS 1.29 BABY!");
 
 var packages = angular.module("umbraco.packages", []);
 

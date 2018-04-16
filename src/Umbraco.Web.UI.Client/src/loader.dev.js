@@ -11,7 +11,7 @@ LazyLoad.js(
 
         "lib/angular/angular-ui-sortable.min.js",
 
-        "lib/angular/1.2.9/angular-mocks.js",
+        // "lib/angular/1.2.9/angular-mocks.js", // TODO: Surely not needed in production?
         "lib/angular/1.2.9/angular-touch.min.js",
         "lib/angular/1.2.9/angular-route.min.js",
 

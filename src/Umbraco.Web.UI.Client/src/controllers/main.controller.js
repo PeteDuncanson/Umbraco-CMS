@@ -18,6 +18,7 @@ function MainController($scope, $rootScope, $location, $routeParams, $timeout, $
         { value: "assets/img/application/logo@2x.png" },
         { value: "assets/img/application/logo@3x.png" }
     ];
+    
     $scope.touchDevice = appState.getGlobalState("touchDevice");
 
 

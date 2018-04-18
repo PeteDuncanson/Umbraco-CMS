@@ -9,13 +9,13 @@ LazyLoad.js(
         "lib/angular/1.2.9/angular-sanitize.min.js",
         //  "lib/angular/1.2.9/angular-route.min.js", // TODO: Don't think we need this for the installer either, unless its loading everything the app needs for later?
         "lib/underscore/underscore-min.js",
-        //  "lib/angular/angular-ui-sortable.min.js", // TODO: Is this even needed here?
+        "lib/angular/angular-ui-sortable.min.js", // TODO: Is this even needed here? Seems so, its defined as a common dependancy in /src/common/directives/_module.js
         "js/installer.app.js",
         "js/umbraco.directives.js",
         "js/umbraco.installer.js"
     ],
-    function() {
-        jQuery(document).ready(function() {
+    function () {
+        jQuery(document).ready(function () {
             angular.bootstrap(document, ["umbraco"]);
         });
     }

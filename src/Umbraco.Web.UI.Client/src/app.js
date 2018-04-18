@@ -22,7 +22,7 @@ var app = angular
             // See: https://code.angularjs.org/1.3.20/docs/guide/migration#controllers
             // TODO: I assume we "could" have this as a config setting so you could set
             // it to "strict" mode which wouldn't allow global controllers
-            $controllerProvider.allowGlobals();
+            //   $controllerProvider.allowGlobals();
         }
     ]);
 console.warn("Running AngularJS 1.29 BABY!");

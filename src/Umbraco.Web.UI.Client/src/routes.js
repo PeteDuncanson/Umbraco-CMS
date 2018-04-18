@@ -4,7 +4,7 @@ app.config(function ($routeProvider) {
         Depending on whether isRequired = true, it first check if the user is authenticated and will resolve successfully
         otherwise the route will fail and the $routeChangeError event will execute, in that handler we will redirect to the rejected
         path that is resolved from this method and prevent default (prevent the route from executing) */
-    var canRoute = function(isRequired) {
+    var canRoute = function (isRequired) {
 
         return {
             /** Checks that the user is authenticated, then ensures that are requires assets are loaded */
@@ -21,7 +21,7 @@ app.config(function ($routeProvider) {
                 userService.isAuthenticated()
                     .then(function () {
 
-                        assetsService._loadInitAssets().then(function() {
+                        assetsService._loadInitAssets().then(function () {
 
                             //This could be the first time has loaded after the user has logged in, in this case
                             // we need to broadcast the authenticated event - this will be handled by the startup (init)
@@ -72,14 +72,14 @@ app.config(function ($routeProvider) {
     };
 
     /** When this is used to resolve it will attempt to log the current user out */
-    var doLogout = function() {
+    var doLogout = function () {
         return {
             isLoggedOut: function ($q, userService) {
                 var deferred = $q.defer();
                 userService.logout().then(function () {
                     //success so continue
                     deferred.resolve(true);
-                }, function() {
+                }, function () {
                     //logout failed somehow ? we'll reject with the login page i suppose
                     deferred.reject({ path: "/login/false" });
                 });
@@ -100,21 +100,21 @@ app.config(function ($routeProvider) {
             resolve: canRoute(false)
         })
         .when('/logout', {
-             redirectTo: '/login/false',
+            redirectTo: '/login/false',
             resolve: doLogout()
         })
         .when('/:section', {
-            
+
             //This allows us to dynamically change the template for this route since you cannot inject services into the templateUrl method.
             template: "<div ng-include='templateUrl'></div>",
             //This controller will execute for this route, then we can execute some code in order to set the template Url
             controller: function ($scope, $route, $routeParams, $location, sectionService) {
-                
+
                 //We are going to check the currently loaded sections for the user and if the section we are navigating
                 //to has a custom route path we'll use that 
-                sectionService.getSectionsForUser().then(function(sections) {
+                sectionService.getSectionsForUser().then(function (sections) {
                     //find the one we're requesting
-                    var found = _.find(sections, function(s) {
+                    var found = _.find(sections, function (s) {
                         return s.alias === $routeParams.section;
                     })
                     if (found && found.routePath) {
@@ -124,7 +124,7 @@ app.config(function ($routeProvider) {
                     else {
                         //there's no custom route path so continue as normal
                         $routeParams.url = "dashboard.aspx?app=" + $routeParams.section;
-                        $scope.templateUrl = 'views/common/dashboard.html';            
+                        $scope.templateUrl = 'views/common/dashboard.html';
                     }
                 });
             },
@@ -146,7 +146,7 @@ app.config(function ($routeProvider) {
                 //if there is no method registered for this then show the dashboard
                 if (!rp.method)
                     return "views/common/dashboard.html";
-                
+
                 return ('views/' + rp.tree + '/' + rp.method + '.html');
             },
             resolve: canRoute(true)
@@ -182,9 +182,13 @@ app.config(function ($routeProvider) {
             },
             resolve: canRoute(true)
         })
-        .otherwise({ redirectTo: '/login' });
-    }).config(function ($locationProvider) {
+        .when("/", {
+            redirectTo: '/content'
+        })
+        .otherwise({ redirectTo: '/login' }); // TODO: Something has changed here, this getting called way to much
+    // must be missing a route somewhere I think. Are sections not allowed for?
+}).config(function ($locationProvider) {
 
-        //$locationProvider.html5Mode(false).hashPrefix('!'); //turn html5 mode off
-        // $locationProvider.html5Mode(true);         //turn html5 mode on
-    });
+    //$locationProvider.html5Mode(false).hashPrefix('!'); //turn html5 mode off
+    // $locationProvider.html5Mode(true);         //turn html5 mode on
+});

@@ -166,7 +166,6 @@ function FormsController($scope, $route, $cookieStore, packageResource, localiza
         return $q.reject();
     };
 
-
     function Video_player (videoId) {
       // Get dom elements
       this.container      = document.getElementById(videoId);
@@ -293,6 +292,12 @@ function FormsController($scope, $route, $cookieStore, packageResource, localiza
     videoPlayer.video_event_handler(videoPlayer, 17);
 }
 
+// Due to v1.2 retiring ng-bind-html-usafe we have to add this in to allow us to parse unicode and html stuff
+angular.module("umbraco").filter('unsafe', function($sce) {
+    return function(val) {
+        return $sce.trustAsHtml(val);
+    };
+});
 angular.module("umbraco").controller("Umbraco.Dashboard.FormsDashboardController", FormsController);
 
 function startupLatestEditsController($scope) {

@@ -12,14 +12,13 @@
                     <div class="dash-inner-row">
 
                         <!-- areas -->
-                        <div ng-repeat="area in row.areas"
-                             class="{{'span' + area.grid + ' column dash-area'}}">
+                        <div ng-repeat="area in row.areas" class="{{'span' + area.grid + ' column dash-area'}}">
                             <div class="dash-inner-area">
 
                                 <!-- Controls -->
                                 <div ng-repeat="control in area.controls" class="dash-control dash-control-{{control.alias}}">
                                     <div class="dash-inner-control">
-                                        <div ng-bind-html-unsafe="control.html"></div>
+                                        <div ng-bind-html="control.html"></div>
                                     </div>
                                 </div>
                                 <!-- Controls end -->
@@ -41,7 +40,8 @@
 
         <div class="welcome-dashboard__intro">
             <h1 class="welcome-dashboard__title">Welcome to The Friendly CMS</h1>
-            <p class="welcome-dashboard__intro-text">Thank you for choosing Umbraco - we think this could be the beginning of something beautiful. While it may feel overwhelming at first, we've done a lot to make the learning curve as smooth and fast as possible.</p>
+            <p class="welcome-dashboard__intro-text">Thank you for choosing Umbraco - we think this could be the beginning of something beautiful. While it may feel
+                overwhelming at first, we've done a lot to make the learning curve as smooth and fast as possible.</p>
         </div>
 
         <div class="welcome-dashboard__info-box-boxes">
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 
 </div>

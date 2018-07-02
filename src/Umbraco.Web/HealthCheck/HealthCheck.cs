@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 using umbraco.interfaces;
 using Umbraco.Core;
+using Umbraco.Core.IO;
+using Umbraco.Core.Services;
+using Umbraco.Web.HealthCheck.Checks.Config;
 
 namespace Umbraco.Web.HealthCheck
 {
@@ -12,6 +18,8 @@ namespace Umbraco.Web.HealthCheck
     [DataContract(Name = "healtCheck", Namespace = "")]
     public abstract class HealthCheck : IDiscoverable
     {
+        protected readonly ILocalizedTextService _textService;
+
         protected HealthCheck(HealthCheckContext healthCheckContext)
         {
             HealthCheckContext = healthCheckContext;
@@ -25,6 +33,7 @@ namespace Umbraco.Web.HealthCheck
             Description = meta.Description;
             Group = meta.Group;
             Id = meta.Id;
+            _textService = healthCheckContext.ApplicationContext.Services.TextService;
         }
 
         [IgnoreDataMember]
@@ -55,7 +64,29 @@ namespace Umbraco.Web.HealthCheck
         /// <returns></returns>
         public abstract HealthCheckStatus ExecuteAction(HealthCheckAction action);
 
-        //TODO: What else?
+        public Dictionary<string, string> GetSettings( ILocalizedTextService textService)
+        {
+            var configFilePath = IOHelper.MapPath("~/config/HealthChecks.config");
+            string xPath = "/HealthChecks/checkSettings/check[@id='" + Id + "']/add";
+            var settings = new Dictionary<string, string>();
 
+            if (File.Exists(configFilePath))
+            {
+                var xmlDocument = new XmlDocument();
+                xmlDocument.Load(configFilePath);
+
+                var xmlNodes = xmlDocument.SelectNodes(xPath);
+                if (xmlNodes != null && xmlNodes.Count > 0)
+                {
+                    foreach (XmlNode node in xmlNodes)
+                    {
+                        settings[node.Attributes["key"].Value] = node.Attributes["value"].Value;
+                    }
+                }
+            }
+
+            return settings;
+
+        }
     }
 }

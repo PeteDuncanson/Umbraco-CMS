@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
+using Umbraco.Core.Configuration;
+using Umbraco.Core.Configuration.HealthChecks;
 
 namespace Umbraco.Web.HealthCheck.Checks.Security
 {
@@ -31,8 +34,10 @@ namespace Umbraco.Web.HealthCheck.Checks.Security
         /// <returns></returns>
         public override IEnumerable<HealthCheckStatus> GetStatus()
         {
-            //return the statuses
-            return new[] { CheckForFiles() };
+            var customSetting = GetSettings();
+
+            // We should get a dictionary of values that we can use as regexp so just cast this to a List<string> for ease
+            return new[] { CheckForFiles( customSetting.Values.ToList<string>() ) };
         }
 
         /// <summary>
@@ -42,71 +47,39 @@ namespace Umbraco.Web.HealthCheck.Checks.Security
         /// <returns></returns>
         public override HealthCheckStatus ExecuteAction(HealthCheckAction action)
         {
-            switch (action.Alias)
-            {
-                case "removeDeveloperFilesFromRoot":
-                    return RemoveFiles();
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            throw new InvalidOperationException("DeveloperFilesInRootCheck has no executable actions");
         }
 
-        private HealthCheckStatus RemoveFiles()
+        private List<string> FindFiles( List<string> whiteListedFiles )
         {
-            var success = false;
-            var message = string.Empty;
-
-            try
-            {
-                var foundFiles = FindFiles();
-                if (foundFiles.Any()) {
-                    foreach ( var file in foundFiles )
-                    {
-                        File.Delete(HostingEnvironment.MapPath(file));
-                    }
-                }
-                success = true;
-                message = _textService.Localize("healthcheck/developerFilesRemovedFromRoot");
-            }
-            catch (Exception exception)
-            {
-                LogHelper.Error<DeveloperFilesInRootCheck>("Could not delete developer files from root of site", exception);
-            }
-
-            return
-                new HealthCheckStatus(message)
-                {
-                    ResultType = success ? StatusResultType.Success : StatusResultType.Error,
-                    Actions = new List<HealthCheckAction>()
-                };
-        }
-
-        private List<string> FindFiles()
-        {
-            var filesToCheck = new string[]
-            {
-                "~/package.json",
-                "~/package-lock.json",
-                "~/gruntfile.js",
-                "~/manifest.json",
-                "~/packages.config",
-                "~/webpack.config.js",
-                "~/readme.txt",
-                "~/readme.doc",
-                "~/readme.md",
-                "~/read-me.txt",
-                "~/read-me.doc",
-                "~/read-me.md",
-                "~/read_me.txt",
-                "~/read_me.doc",
-                "~/read_me.md"
-            };
-
             var foundFiles = new List<string>();
 
-            foreach (var file in filesToCheck)
+            var filesInRoot = Directory.GetFiles(HostingEnvironment.MapPath("~"));
+
+            List<Regex> whiteListedRegExpressions = new List<Regex>();
+            foreach( var whiteListedFile in whiteListedFiles )
             {
-                if (File.Exists(HostingEnvironment.MapPath(file)))
+                if (!String.IsNullOrEmpty(whiteListedFile))
+                {
+                    Regex whiteListedRegExp = new Regex(whiteListedFile, RegexOptions.IgnoreCase);
+                    whiteListedRegExpressions.Add(whiteListedRegExp);
+                }
+            }
+
+            foreach (var file in filesInRoot )
+            {
+                var inWhiteList = false;
+
+                foreach( var whiteListedRegEx in whiteListedRegExpressions )
+                {
+                    if ( whiteListedRegEx.IsMatch( file ) )
+                    {
+                        inWhiteList = true;
+                        continue;
+                    }
+                }
+
+                if (!inWhiteList)
                 {
                     foundFiles.Add(file);
                 }
@@ -115,10 +88,10 @@ namespace Umbraco.Web.HealthCheck.Checks.Security
             return foundFiles;
         }
 
-        private HealthCheckStatus CheckForFiles()
+        private HealthCheckStatus CheckForFiles( List<string> whitelistedFiles )
         {
             var message = string.Empty;
-            var foundFiles = FindFiles();
+            var foundFiles = FindFiles(whitelistedFiles);
 
             if (foundFiles.Any())
             {
@@ -130,13 +103,6 @@ namespace Umbraco.Web.HealthCheck.Checks.Security
             }
 
             var actions = new List<HealthCheckAction>();
-            actions.Add(new HealthCheckAction("removeDeveloperFilesFromRoot", Id)
-            // Override the "Rectify" button name and describe what this action will do
-            {
-                Name = _textService.Localize("healthcheck/developerFilesInRootActionButton"),
-                Description = _textService.Localize("healthcheck/developerFilesInRootActionDescription")
-            });
-
             return
                 new HealthCheckStatus(message)
                 {

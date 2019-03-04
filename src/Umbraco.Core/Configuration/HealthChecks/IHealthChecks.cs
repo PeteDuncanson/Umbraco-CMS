@@ -6,5 +6,6 @@ namespace Umbraco.Core.Configuration.HealthChecks
     {
         IEnumerable<IDisabledHealthCheck> DisabledChecks { get; }
         IHealthCheckNotificationSettings NotificationSettings { get; }
+        IEnumerable<CustomCheckSetting> CustomCheckSettings { get; }
     }
 }

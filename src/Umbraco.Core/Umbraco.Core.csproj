@@ -195,6 +195,11 @@
     <Compile Include="Configuration\BaseRest\ExtensionElement.cs" />
     <Compile Include="Configuration\BaseRest\ExtensionElementCollection.cs" />
     <Compile Include="Configuration\BaseRest\MethodElement.cs" />
+    <Compile Include="Configuration\HealthChecks\CustomCheckSettingCollection.cs" />
+    <Compile Include="Configuration\HealthChecks\CustomCheckSettingsElement.cs" />
+    <Compile Include="Configuration\HealthChecks\CustomCheckSettingItem.cs" />
+    <Compile Include="Configuration\HealthChecks\CustomCheckSetting.cs" />
+    <Compile Include="Configuration\HealthChecks\CustomCheckSettingsElementCollection.cs" />
     <Compile Include="Configuration\LocalTempStorage.cs" />
     <Compile Include="Configuration\CoreDebug.cs" />
     <Compile Include="Configuration\Dashboard\AccessElement.cs" />

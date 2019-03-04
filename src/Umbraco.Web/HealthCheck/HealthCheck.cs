@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
 using System.Runtime.Serialization;
-using System.Xml;
 using umbraco.interfaces;
 using Umbraco.Core;
-using Umbraco.Core.IO;
-using Umbraco.Core.Services;
-using Umbraco.Web.HealthCheck.Checks.Config;
+using Umbraco.Core.Configuration;
+using Umbraco.Core.Configuration.HealthChecks;
 
 namespace Umbraco.Web.HealthCheck
 {
@@ -18,8 +14,6 @@ namespace Umbraco.Web.HealthCheck
     [DataContract(Name = "healtCheck", Namespace = "")]
     public abstract class HealthCheck : IDiscoverable
     {
-        protected readonly ILocalizedTextService _textService;
-
         protected HealthCheck(HealthCheckContext healthCheckContext)
         {
             HealthCheckContext = healthCheckContext;
@@ -33,7 +27,6 @@ namespace Umbraco.Web.HealthCheck
             Description = meta.Description;
             Group = meta.Group;
             Id = meta.Id;
-            _textService = healthCheckContext.ApplicationContext.Services.TextService;
         }
 
         [IgnoreDataMember]
@@ -64,29 +57,23 @@ namespace Umbraco.Web.HealthCheck
         /// <returns></returns>
         public abstract HealthCheckStatus ExecuteAction(HealthCheckAction action);
 
-        public Dictionary<string, string> GetSettings( ILocalizedTextService textService)
+        public Dictionary<string, string> GetSettings()
         {
-            var configFilePath = IOHelper.MapPath("~/config/HealthChecks.config");
-            string xPath = "/HealthChecks/checkSettings/check[@id='" + Id + "']/add";
-            var settings = new Dictionary<string, string>();
+            var settings = UmbracoConfig.For.HealthCheck().CustomCheckSettings.Settings;
+            var checkSetting = new Dictionary<string, string>();
 
-            if (File.Exists(configFilePath))
+            foreach (CustomCheckSetting settingObj in settings)
             {
-                var xmlDocument = new XmlDocument();
-                xmlDocument.Load(configFilePath);
-
-                var xmlNodes = xmlDocument.SelectNodes(xPath);
-                if (xmlNodes != null && xmlNodes.Count > 0)
+                // Only return the settings for the current Check
+                if (settingObj.Id == this.Id)
                 {
-                    foreach (XmlNode node in xmlNodes)
-                    {
-                        settings[node.Attributes["key"].Value] = node.Attributes["value"].Value;
-                    }
+                    // We just return the setting Object as a dictionary here, this is all the <add key="" value="" /> items in the config for this Check
+                    checkSetting = settingObj.GetSettingsDictionary();
+                    break;
                 }
             }
 
-            return settings;
-
+            return checkSetting;
         }
     }
 }

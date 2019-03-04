@@ -8,6 +8,7 @@ namespace Umbraco.Core.Configuration.HealthChecks
     {
         private const string DisabledChecksKey = "disabledChecks";
         private const string NotificationSettingsKey = "notificationSettings";
+        private const string CustomCheckSettingsKey = "customCheckSettings";
 
         [ConfigurationProperty(DisabledChecksKey)]
         public DisabledHealthChecksElementCollection DisabledChecks
@@ -21,6 +22,12 @@ namespace Umbraco.Core.Configuration.HealthChecks
             get { return ((HealthCheckNotificationSettingsElement)(base[NotificationSettingsKey])); }
         }
 
+        [ConfigurationProperty(CustomCheckSettingsKey, IsRequired = false)]
+        public CustomCheckSettingsElementCollection CustomCheckSettings
+        {
+            get { return ((CustomCheckSettingsElementCollection)(base[CustomCheckSettingsKey])); }
+        }
+
         IEnumerable<IDisabledHealthCheck> IHealthChecks.DisabledChecks
         {
             get { return DisabledChecks; }
@@ -29,6 +36,11 @@ namespace Umbraco.Core.Configuration.HealthChecks
         IHealthCheckNotificationSettings IHealthChecks.NotificationSettings
         {
             get { return NotificationSettings; }
+        }
+
+        IEnumerable<CustomCheckSettingsElement> IHealthChecks.CustomCheckSettings
+        {
+            get { return CustomCheckSettings; }
         }
     }
 }

@@ -103,6 +103,9 @@ namespace Umbraco.Web
         public override IBootManager Initialize()
         {
             base.Initialize();
+            
+            
+
 
             _examineStartup = new ExamineStartup(ApplicationContext);
             _examineStartup.Initialize();

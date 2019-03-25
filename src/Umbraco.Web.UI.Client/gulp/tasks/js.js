@@ -6,6 +6,8 @@ var gulp = require('gulp');
 var _ = require('lodash');
 var MergeStream = require('merge-stream');
 
+const prettier = require('gulp-prettier');
+
 var processJs = require('../util/processJs');
 
 /**************************
@@ -18,8 +20,9 @@ gulp.task('js', function () {
 
     stream.add(
         gulp.src(config.sources.globs.js)
+            .pipe(prettier())
             .pipe(gulp.dest(config.root + config.targets.js))
-        );
+    );
 
      _.forEach(config.sources.js, function (group) {
         stream.add (processJs(group.files, group.out) );

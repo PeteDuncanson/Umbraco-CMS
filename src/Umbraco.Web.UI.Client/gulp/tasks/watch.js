@@ -10,6 +10,8 @@ var processJs = require('../util/processJs');
 
 var watch = require('gulp-watch');
 
+const prettier = require('gulp-prettier');
+
 gulp.task('watch', function () {
 
     var stream = new MergeStream();
@@ -45,6 +47,7 @@ gulp.task('watch', function () {
     //watch all views - copy single file changes
     stream.add(
         watch(config.sources.globs.views, { interval: watchInterval })
+        .pipe( )
         .pipe(gulp.dest(config.root + config.targets.views))
     );
 

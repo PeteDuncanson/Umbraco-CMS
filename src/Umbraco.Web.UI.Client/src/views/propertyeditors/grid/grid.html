@@ -22,7 +22,7 @@
         <div class="templates-preview"
              ng-show="!model.value || model.value == ''">
 
-             <p><strong><localize key="grid_chooseLayout" /></strong></p>
+             <p><strong><localize key="grid_chooseLayout"></localize></strong></p>
 
             <div class="preview-rows layout"
                  ng-repeat="template in model.config.items.templates"
@@ -83,7 +83,7 @@
                                     <div class="umb-row-title">{{row.label || row.name}}</div>
 
                                     <div class="umb-grid-has-config" ng-if="row.hasConfig && !sortMode">
-                                            <localize key="grid_settingsApplied" />
+                                            <localize key="grid_settingsApplied"></localize>
                                     </div>
                                 </div>
 
@@ -139,17 +139,17 @@
                                                       <!-- disable drop overlay -->
                                                       <div class="drop-overlay -disable" ng-if="area.dropNotAllowed">
                                                           <i class="icon-delete drop-icon"></i>
-                                                          <localize key="grid_contentNotAllowed" />
+                                                          <localize key="grid_contentNotAllowed"></localize>
                                                       </div>
 
                                                       <!-- allow drop overlay -->
                                                       <div class="drop-overlay -allow" ng-if="area.dropOnEmpty">
                                                           <i class="icon-download drop-icon"></i>
-                                                          <localize key="grid_contentAllowed" />
+                                                          <localize key="grid_contentAllowed"></localize>
                                                       </div>
 
                                                       <div class="umb-grid-has-config" ng-if="area.hasConfig && !sortMode">
-                                                         <localize key="grid_settingsApplied" />
+                                                         <localize key="grid_settingsApplied"></localize>
                                                       </div>
 
                                                       <div class="cell-tools" ng-if="area.active && !sortMode">
@@ -163,8 +163,8 @@
                                                           <!-- Control placeholder -->
                                                           <div class="umb-cell-placeholder" ng-if="area.controls.length === 0" ng-click="openEditorOverlay($event, area, 0, area.$uniqueId);">
                                                                <div class="cell-tools-add -center">
-                                                                   <localize ng-if="!sortMode" key="grid_addElement" />
-                                                                   <localize ng-if="sortMode" key="grid_dropElement" />
+                                                                   <localize ng-if="!sortMode" key="grid_addElement"></localize>
+                                                                   <localize ng-if="sortMode" key="grid_dropElement"></localize>
                                                                </div>
                                                           </div>
 
@@ -226,7 +226,7 @@
 
                                                       <!-- if area is empty tools -->
                                                       <div class="umb-grid-add-more-content" ng-if="area.controls.length > 0 && !sortMode && (area.maxItems == undefined || area.maxItems == '' || area.maxItems == 0 || area.maxItems > area.controls.length)">
-                                                          <div class="cell-tools-add -bar newbtn" ng-click="openEditorOverlay($event, area, 0, area.$uniqueId);"><localize key="grid_addElement" /></div>
+                                                          <div class="cell-tools-add -bar newbtn" ng-click="openEditorOverlay($event, area, 0, area.$uniqueId);"><localize key="grid_addElement"></localize></div>
                                                       </div>
 
                                                  </div>
@@ -262,7 +262,7 @@
 
                     <div class="templates-preview" ng-if="showRowConfigurations">
 
-                        <p ng-hide="section.rows.length > 0"><strong><localize key="grid_addRows" /></strong></p>
+                        <p ng-hide="section.rows.length > 0"><strong><localize key="grid_addRows"></localize></strong></p>
 
                         <div class="preview-rows columns"
                              ng-repeat="layout in  section.$allowedLayouts"

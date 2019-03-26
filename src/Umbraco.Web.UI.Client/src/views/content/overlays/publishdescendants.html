@@ -26,7 +26,7 @@
 
             <umb-checkbox
                 input-id="includeUnpublishedSelector"
-                model="model.includeUnpublished" />
+                model="model.includeUnpublished"></umb-checkbox>
 
             <label for="includeUnpublishedSelector">
                 <localize key="content_includeUnpublished"></localize>
@@ -48,7 +48,7 @@
                             name="publishVariantSelector"
                             model="variant.publish"
                             on-change="vm.changeSelection(variant)"
-                            server-validation-field="{{variant.htmlId}}"/>
+                            server-validation-field="{{variant.htmlId}}"></umb-checkbox>
 
                         <div>
                             <label for="{{variant.htmlId}}" style="margin-bottom: 0;">
